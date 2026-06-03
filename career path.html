@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laluan Kerjaya FA Teknologi Maklumat</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1f2937;
+    --accent-blue: #3b82f6;
+    --accent-teal: #14b8a6;
+    --accent-violet: #8b5cf6;
+    --accent-amber: #f59e0b;
+    --accent-rose: #f43f5e;
+    --accent-emerald: #10b981;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+    --glow-blue: rgba(59,130,246,0.25);
+    --glow-teal: rgba(20,184,166,0.25);
+    --glow-violet: rgba(139,92,246,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    position: relative;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-teal), transparent);
+  }
+  .header-tag {
+    display: inline-block;
+    background: rgba(20,184,166,0.15);
+    border: 1px solid rgba(20,184,166,0.4);
+    color: var(--accent-teal);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #e2e8f0 0%, var(--accent-teal) 50%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ── NAV TABS ── */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 24px 24px 0;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+  .tab-btn.active {
+    background: rgba(20,184,166,0.15);
+    border-color: var(--accent-teal);
+    color: var(--accent-teal);
+  }
+
+  /* ── MAIN CONTENT ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ══════════════════════════════
+     FLOWCHART VIEW
+  ══════════════════════════════ */
+  .flowchart-wrap {
+    padding: 40px 24px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+
+  /* Columns layout */
+  .flow-columns {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr;
+    gap: 0;
+    align-items: start;
+  }
+
+  .flow-col { display: flex; flex-direction: column; gap: 16px; }
+
+  .col-header {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .col-header-badge {
+    display: inline-block;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .col-header p { font-size: 11px; color: var(--text-muted); }
+
+  /* Connector column */
+  .flow-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px;
+  }
+  .connector-line {
+    width: 2px;
+    flex: 1;
+    min-height: 60px;
+    background: linear-gradient(180deg, transparent, var(--accent-teal) 40%, var(--accent-teal) 60%, transparent);
+    opacity: 0.4;
+    position: relative;
+  }
+  .connector-arrow {
+    color: var(--accent-teal);
+    font-size: 18px;
+    opacity: 0.6;
+    margin: -4px 0;
+  }
+
+  /* NODE CARD */
+  .node {
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .node::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 12px 12px 0 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .node:hover { transform: translateY(-2px); }
+  .node:hover::before { opacity: 1; }
+
+  .node.blue { --nc: var(--accent-blue); --nglow: var(--glow-blue); }
+  .node.teal { --nc: var(--accent-teal); --nglow: var(--glow-teal); }
+  .node.violet { --nc: var(--accent-violet); --nglow: var(--glow-violet); }
+  .node.amber { --nc: var(--accent-amber); --nglow: rgba(245,158,11,0.2); }
+  .node.emerald { --nc: var(--accent-emerald); --nglow: rgba(16,185,129,0.2); }
+  .node.rose { --nc: var(--accent-rose); --nglow: rgba(244,63,94,0.2); }
+
+  .node::before { background: var(--nc); }
+  .node:hover {
+    border-color: var(--nc);
+    box-shadow: 0 0 20px var(--nglow), 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .node.active-node {
+    border-color: var(--nc);
+    box-shadow: 0 0 24px var(--nglow), 0 4px 24px rgba(0,0,0,0.4);
+  }
+  .node.active-node::before { opacity: 1; }
+
+  .node-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.06);
+  }
+  .node-grade {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--nc);
+    margin-bottom: 2px;
+  }
+  .node-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  .node-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .node-salary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--nc);
+  }
+  .node-click-hint {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--nc);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: var(--nc);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .node:hover .node-click-hint { opacity: 1; }
+
+  /* Path entry qualifier */
+  .entry-qual {
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .entry-qual strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 12px; }
+
+  /* Detail panel */
+  .detail-panel {
+    position: fixed;
+    right: 0; top: 0; bottom: 0;
+    width: 360px;
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow-y: auto;
+    padding: 24px;
+  }
+  .detail-panel.open { transform: translateX(0); }
+  .panel-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .panel-close:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .panel-grade-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .panel-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .panel-en { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+  .panel-salary-box {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .salary-item label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 2px; }
+  .salary-item span { font-size: 16px; font-weight: 700; }
+  .panel-section { margin-bottom: 20px; }
+  .panel-section h4 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+  .panel-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .panel-list li {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 12px; color: var(--text-muted); line-height: 1.4;
+  }
+  .panel-list li::before {
+    content: '▹';
+    color: var(--nc, var(--accent-teal));
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 10px;
+  }
+  .panel-qual-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    margin-bottom: 6px;
+    width: 100%;
+  }
+  .promo-badge {
+    background: rgba(20,184,166,0.1);
+    border: 1px solid rgba(20,184,166,0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--accent-teal);
+    line-height: 1.5;
+  }
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+    display: none;
+  }
+  .overlay.show { display: block; }
+
+  /* ══════════════════════════════
+     TIMELINE VIEW
+  ══════════════════════════════ */
+  .timeline-wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .tl-item {
+    display: grid;
+    grid-template-columns: 100px 1px 1fr;
+    gap: 0 20px;
+    margin-bottom: 0;
+  }
+  .tl-year {
+    text-align: right;
+    padding-top: 18px;
+  }
+  .tl-year-val {
+    font-size: 12px; font-weight: 700; color: var(--text-muted);
+  }
+  .tl-year-label {
+    font-size: 10px; color: rgba(148,163,184,0.5);
+  }
+  .tl-line-col {
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .tl-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+    flex-shrink: 0;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+    background: var(--bg);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tl-item:hover .tl-dot { transform: scale(1.4); }
+  .tl-vert {
+    flex: 1;
+    width: 2px;
+    min-height: 30px;
+    background: var(--border);
+  }
+  .tl-card {
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 24px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tl-card:hover { border-color: var(--nc); transform: translateX(4px); }
+  .tl-card-grade { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .tl-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .tl-card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+  .tl-card-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .pill.highlight { border-color: var(--nc); color: var(--nc); background: rgba(var(--nc-rgb, 20,184,166), 0.1); }
+
+  /* ══════════════════════════════
+     QUIZ VIEW
+  ══════════════════════════════ */
+  .quiz-wrap {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .quiz-step { display: none; }
+  .quiz-step.active { display: block; }
+  .quiz-progress {
+    display: flex; gap: 6px; margin-bottom: 32px;
+  }
+  .quiz-prog-dot {
+    height: 3px; border-radius: 3px; flex: 1;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .quiz-prog-dot.done { background: var(--accent-teal); }
+  .quiz-q {
+    font-size: 22px; font-weight: 800; margin-bottom: 6px; line-height: 1.3;
+  }
+  .quiz-qsub { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: inherit;
+    color: var(--text);
+  }
+  .quiz-option:hover { border-color: var(--accent-teal); background: rgba(20,184,166,0.05); }
+  .quiz-option.selected { border-color: var(--accent-teal); background: rgba(20,184,166,0.12); }
+  .quiz-option-title { font-size: 14px; font-weight: 600; }
+  .quiz-option-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .quiz-nav { display: flex; justify-content: flex-end; margin-top: 24px; }
+  .btn-next {
+    background: var(--accent-teal);
+    color: #0d1117;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .btn-next.visible { display: block; }
+  .btn-next:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  /* Quiz result */
+  .quiz-result {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .result-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .result-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .result-path {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 24px 0;
+    text-align: left;
+  }
+  .result-path h4 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+  .result-steps { display: flex; flex-direction: column; gap: 10px; }
+  .result-step {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px;
+  }
+  .result-step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .result-step-arrow {
+    color: var(--text-muted); font-size: 12px; margin-left: 34px; opacity: 0.5;
+  }
+  .btn-retry {
+    background: transparent;
+    border: 1.5px solid var(--accent-teal);
+    color: var(--accent-teal);
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-retry:hover { background: rgba(20,184,166,0.1); }
+
+  /* Animated path line on flowchart */
+  @keyframes dashDraw {
+    from { stroke-dashoffset: 500; }
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes nodePop {
+    0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .node { animation: nodePop 0.4s ease both; }
+  .node:nth-child(1) { animation-delay: 0.05s; }
+  .node:nth-child(2) { animation-delay: 0.1s; }
+  .node:nth-child(3) { animation-delay: 0.15s; }
+  .node:nth-child(4) { animation-delay: 0.2s; }
+  .node:nth-child(5) { animation-delay: 0.25s; }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .flow-columns {
+      grid-template-columns: 1fr;
+    }
+    .flow-connector { display: none; }
+    .col-header { text-align: left; }
+    .detail-panel { width: 100%; }
+    .flow-col { gap: 10px; }
+    .flow-col + .flow-col { margin-top: 24px; }
+  }
+
+  /* Glow pulse on path animate */
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 10px var(--nglow); }
+    50% { box-shadow: 0 0 24px var(--nglow), 0 0 40px var(--nglow); }
+  }
+  .node.pulse-anim { animation: pulse-glow 2s ease-in-out infinite; }
+
+  /* Scroll fade-in */
+  .tl-card { animation: nodePop 0.4s ease both; }
+
+  /* mobile tab scroll */
+  .tabs { overflow-x: auto; padding-bottom: 4px; }
+  .tabs::-webkit-scrollbar { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tag">Perjawatan Awam Malaysia</div>
+  <h1>Laluan Kerjaya<br>Teknologi Maklumat</h1>
+  <p>Panduan interaktif bidang FA — dari SPM hingga Pengurusan Profesional<br>
+     <em style="font-size:12px;opacity:0.6">Interactive career guide · IT Public Service Malaysia</em></p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchView('flowchart')">🗺️ Peta Kerjaya</button>
+  <button class="tab-btn" onclick="switchView('timeline')">📅 Garis Masa</button>
+  <button class="tab-btn" onclick="switchView('quiz')">🎯 Cadangan Laluan</button>
+</div>
+
+<!-- ══ FLOWCHART VIEW ══ -->
+<div id="view-flowchart" class="view active">
+  <div class="flowchart-wrap">
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue)"></div>Pelaksana (Entry)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-teal)"></div>Sokongan Teknikal</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-violet)"></div>Penolong Pegawai</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-amber)"></div>Pegawai Profesional</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-rose)"></div>Pengurusan Kanan</div>
+    </div>
+
+    <div class="flow-columns">
+
+      <!-- COL 1: Pelaksana -->
+      <div class="flow-col">
+        <div class="col-header">
+          <div class="col-header-badge" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);color:var(--accent-blue)">PELAKSANA</div>
+          <p>Kumpulan Sokongan Teknikal</p>
+        </div>
+
+        <div class="entry-qual">
+          <strong>📘 SPM / SVM</strong>
+          Kepujian BM + SKM Tahap 2/3 atau Sijil IT
+        </div>
+
+        <div class="node teal" onclick="openPanel('ft19')" data-id="ft19">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">🖥️</div>
+          <div class="node-grade">Gred FT19</div>
+          <div class="node-title">Juruteknik Komputer</div>
+          <div class="node-subtitle">Computer Technician</div>
+          <div class="node-salary">💰 RM 1,500 – 4,800/bln</div>
+        </div>
+
+        <div class="node teal" onclick="openPanel('ft22')" data-id="ft22">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">⚙️</div>
+          <div class="node-grade">Gred FT22 → FT26 → FT28</div>
+          <div class="node-title">Juruteknik Komputer (Kanan)</div>
+          <div class="node-subtitle">Senior Computer Technician</div>
+          <div class="node-salary">💰 RM 1,800 – 5,600/bln</div>
+        </div>
+      </div>
+
+      <!-- CONNECTOR 1→2 -->
+      <div class="flow-connector">
+        <div class="connector-line"></div>
+        <div class="connector-arrow">▶</div>
+        <div class="connector-line"></div>
+      </div>
+
+      <!-- COL 2: Penolong Pegawai -->
+      <div class="flow-col">
+        <div class="col-header">
+          <div class="col-header-badge" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.4);color:var(--accent-violet)">PENOLONG PEGAWAI</div>
+          <p>Diploma IT / Sains Komputer</p>
+        </div>
+
+        <div class="entry-qual">
+          <strong>📗 Diploma</strong>
+          Sains Komputer / Teknologi Maklumat / Kejuruteraan Komputer (diiktiraf Kerajaan)
+        </div>
+
+        <div class="node violet" onclick="openPanel('fa29')" data-id="fa29">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">💼</div>
+          <div class="node-grade">Gred FA29</div>
+          <div class="node-title">Penolong Pegawai Teknologi Maklumat</div>
+          <div class="node-subtitle">Asst. IT Officer</div>
+          <div class="node-salary">💰 RM 1,855 – 5,684/bln</div>
+        </div>
+
+        <div class="node violet" onclick="openPanel('fa32')" data-id="fa32">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">📊</div>
+          <div class="node-grade">Gred FA32 → FA38 → FA40</div>
+          <div class="node-title">Penolong Pegawai TM (Kanan)</div>
+          <div class="node-subtitle">Senior Asst. IT Officer</div>
+          <div class="node-salary">💰 RM 2,200 – 7,500/bln</div>
+        </div>
+
+        <!-- Lateral path note -->
+        <div class="entry-qual" style="border-color:rgba(139,92,246,0.3);color:rgba(139,92,246,0.8)">
+          ⬆️ <strong style="color:var(--accent-violet)">Laluan Peningkatan</strong><br>
+          FT19/22 → FA29 (Peningkatan secara Lantikan, tertakluk kekosongan)
+        </div>
+      </div>
+
+      <!-- CONNECTOR 2→3 -->
+      <div class="flow-connector">
+        <div class="connector-line"></div>
+        <div class="connector-arrow">▶</div>
+        <div class="connector-line"></div>
+      </div>
+
+      <!-- COL 3: Pegawai Profesional -->
+      <div class="flow-col">
+        <div class="col-header">
+          <div class="col-header-badge" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:var(--accent-amber)">PEGAWAI PROFESIONAL</div>
+          <p>Ijazah Sarjana Muda / Sarjana</p>
+        </div>
+
+        <div class="entry-qual">
+          <strong>📕 Ijazah</strong>
+          Sarjana Muda (Kepujian) Sains Komputer / IT / Kejuruteraan Komputer
+        </div>
+
+        <div class="node amber" onclick="openPanel('f41')" data-id="f41">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">🎓</div>
+          <div class="node-grade">Gred F41</div>
+          <div class="node-title">Pegawai Teknologi Maklumat</div>
+          <div class="node-subtitle">IT Officer · Pengurusan & Profesional</div>
+          <div class="node-salary">💰 RM 2,315 – 9,618/bln</div>
+        </div>
+
+        <div class="node amber" onclick="openPanel('f44')" data-id="f44">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">🏗️</div>
+          <div class="node-grade">Gred F44</div>
+          <div class="node-title">Pegawai TM (Kanan)</div>
+          <div class="node-subtitle">Senior IT Officer</div>
+          <div class="node-salary">💰 RM 3,602 – 10,504/bln</div>
+        </div>
+
+        <div class="node amber" onclick="openPanel('f48')" data-id="f48">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">🌐</div>
+          <div class="node-grade">Gred F48</div>
+          <div class="node-title">Pegawai TM Utama</div>
+          <div class="node-subtitle">Principal IT Officer</div>
+          <div class="node-salary">💰 RM 5,203 – 11,761/bln</div>
+        </div>
+
+        <div class="node rose" onclick="openPanel('f52')" data-id="f52">
+          <div class="node-click-hint">i</div>
+          <div class="node-icon">🏛️</div>
+          <div class="node-grade">Gred F52 → F54</div>
+          <div class="node-title">Pengarah / Timbalan Pengarah TM</div>
+          <div class="node-subtitle">Director / Deputy Director IT</div>
+          <div class="node-salary">💰 RM 6,800 – 13,000+/bln</div>
+        </div>
+
+        <!-- Lateral from FA -->
+        <div class="entry-qual" style="border-color:rgba(245,158,11,0.3);color:rgba(245,158,11,0.8)">
+          ⬆️ <strong style="color:var(--accent-amber)">Laluan Peningkatan</strong><br>
+          FA38/FA40 → F41 (Peningkatan secara Lantikan)
+        </div>
+      </div>
+
+    </div><!-- /flow-columns -->
+  </div>
+</div>
+
+<!-- ══ TIMELINE VIEW ══ -->
+<div id="view-timeline" class="view">
+  <div class="timeline-wrap">
+    <div id="timeline-items"></div>
+  </div>
+</div>
+
+<!-- ══ QUIZ VIEW ══ -->
+<div id="view-quiz" class="view">
+  <div class="quiz-wrap">
+    <div class="quiz-progress" id="quiz-progress">
+      <div class="quiz-prog-dot done"></div>
+      <div class="quiz-prog-dot"></div>
+      <div class="quiz-prog-dot"></div>
+      <div class="quiz-prog-dot"></div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="quiz-step active" data-step="1">
+      <div class="quiz-q">Apakah kelayakan semasa anda?<br><span style="font-weight:400;font-size:16px">What is your current qualification?</span></div>
+      <div class="quiz-qsub">Pilih yang paling hampir dengan kelayakan anda sekarang.</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="selectOption(this,'q1','spm')" data-val="spm">
+          <div class="quiz-option-title">SPM / SVM</div>
+          <div class="quiz-option-sub">Sijil Pelajaran Malaysia / Sijil Vokasional Malaysia</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q1','cert')" data-val="cert">
+          <div class="quiz-option-title">Sijil (Certificate)</div>
+          <div class="quiz-option-sub">Sijil IT / SKM Tahap 2 atau 3 / Politeknik Sijil</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q1','diploma')" data-val="diploma">
+          <div class="quiz-option-title">Diploma</div>
+          <div class="quiz-option-sub">Diploma Sains Komputer / IT / Kejuruteraan Komputer</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q1','degree')" data-val="degree">
+          <div class="quiz-option-title">Ijazah Sarjana Muda (Degree)</div>
+          <div class="quiz-option-sub">Bidang Sains Komputer, IT, Kejuruteraan Komputer atau berkaitan</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q1','masters')" data-val="masters">
+          <div class="quiz-option-title">Sarjana / PhD</div>
+          <div class="quiz-option-sub">Ijazah Lanjutan dalam bidang IT atau berkaitan</div>
+        </button>
+      </div>
+      <div class="quiz-nav"><button class="btn-next" id="next1" onclick="nextStep(2)">Seterusnya →</button></div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="quiz-step" data-step="2">
+      <div class="quiz-q">Apakah minat utama anda?<br><span style="font-weight:400;font-size:16px">What is your main area of interest?</span></div>
+      <div class="quiz-qsub">Pilih bidang yang paling menarik minat anda.</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="selectOption(this,'q2','hardware')" data-val="hardware">
+          <div class="quiz-option-title">🔧 Perkakasan & Rangkaian</div>
+          <div class="quiz-option-sub">Hardware, networking, server maintenance, helpdesk</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q2','software')" data-val="software">
+          <div class="quiz-option-title">💻 Pembangunan Sistem & Perisian</div>
+          <div class="quiz-option-sub">System development, programming, database, applications</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q2','data')" data-val="data">
+          <div class="quiz-option-title">📊 Data & Analisis</div>
+          <div class="quiz-option-sub">Data management, analysis, reporting, business intelligence</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q2','security')" data-val="security">
+          <div class="quiz-option-title">🔐 Keselamatan Siber</div>
+          <div class="quiz-option-sub">Cybersecurity, IT governance, risk management</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q2','management')" data-val="management">
+          <div class="quiz-option-title">🏛️ Pengurusan & Dasar IT</div>
+          <div class="quiz-option-sub">IT policy, project management, leadership</div>
+        </button>
+      </div>
+      <div class="quiz-nav"><button class="btn-next" id="next2" onclick="nextStep(3)">Seterusnya →</button></div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="quiz-step" data-step="3">
+      <div class="quiz-q">Berapa tahun pengalaman kerja anda?<br><span style="font-weight:400;font-size:16px">How many years of work experience?</span></div>
+      <div class="quiz-qsub">Pengalaman dalam sektor kerajaan atau swasta.</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="selectOption(this,'q3','fresh')" data-val="fresh">
+          <div class="quiz-option-title">Baru Tamat Belajar (Fresh Graduate)</div>
+          <div class="quiz-option-sub">0 – 1 tahun</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q3','junior')" data-val="junior">
+          <div class="quiz-option-title">1 – 3 tahun</div>
+          <div class="quiz-option-sub">Pengalaman awal dalam bidang IT</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q3','mid')" data-val="mid">
+          <div class="quiz-option-title">4 – 7 tahun</div>
+          <div class="quiz-option-sub">Pengalaman pertengahan</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q3','senior')" data-val="senior">
+          <div class="quiz-option-title">8+ tahun</div>
+          <div class="quiz-option-sub">Pengalaman kanan</div>
+        </button>
+      </div>
+      <div class="quiz-nav"><button class="btn-next" id="next3" onclick="nextStep(4)">Seterusnya →</button></div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="quiz-step" data-step="4">
+      <div class="quiz-q">Apakah matlamat kerjaya jangka panjang anda?<br><span style="font-weight:400;font-size:16px">What is your long-term career goal?</span></div>
+      <div class="quiz-qsub">Pilih arah yang paling sesuai.</div>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="selectOption(this,'q4','stable')" data-val="stable">
+          <div class="quiz-option-title">🏠 Kestabilan & Faedah Kerajaan</div>
+          <div class="quiz-option-sub">Pencen, cuti, kestabilan kerja sektor awam</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q4','grow')" data-val="grow">
+          <div class="quiz-option-title">📈 Pertumbuhan & Kenaikan Pangkat</div>
+          <div class="quiz-option-sub">Naik pangkat secepat mungkin dalam perkhidmatan awam</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q4','specialist')" data-val="specialist">
+          <div class="quiz-option-title">🔬 Pakar Teknikal</div>
+          <div class="quiz-option-sub">Menjadi pakar rujuk dalam bidang IT tertentu</div>
+        </button>
+        <button class="quiz-option" onclick="selectOption(this,'q4','leader')" data-val="leader">
+          <div class="quiz-option-title">👔 Pemimpin & Pengurus</div>
+          <div class="quiz-option-sub">Pengarah, Ketua Jabatan, pengurusan tertinggi</div>
+        </button>
+      </div>
+      <div class="quiz-nav"><button class="btn-next" id="next4" onclick="showResult()">Lihat Cadangan ✨</button></div>
+    </div>
+
+    <!-- Result -->
+    <div class="quiz-step" data-step="result">
+      <div class="quiz-result" id="quiz-result-content"></div>
+      <div style="text-align:center;margin-top:20px">
+        <button class="btn-retry" onclick="resetQuiz()">↩ Cuba Semula</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="detail-panel" id="detail-panel">
+  <button class="panel-close" onclick="closePanel()">✕</button>
+  <div id="panel-content"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const nodes = {
+  ft19: {
+    grade: 'FT19', color: 'var(--accent-teal)', colorBg: 'rgba(20,184,166,0.15)', colorBorder: 'rgba(20,184,166,0.4)',
+    title: 'Juruteknik Komputer',
+    en: 'Computer Technician',
+    group: 'Pelaksana · Kumpulan Sokongan',
+    salMin: 'RM 1,500', salMax: 'RM 4,800',
+    kumpulan: 'Pelaksana',
+    kelayakan: [
+      'SPM / SVM + Sijil Kemahiran Malaysia (SKM) Tahap 2 — RM 1,561/bln',
+      'SPM / SVM + SKM Tahap 3 — RM 1,622/bln',
+      'Sijil Vokasional Malaysia (SVM) dalam bidang berkaitan — RM 1,500/bln',
+    ],
+    duties: [
+      'Penyelenggaraan & pembaikan perkakasan komputer, pencetak, pelayan, peralatan rangkaian',
+      'Sokongan teknikal (helpdesk) peringkat pertama kepada pengguna akhir',
+      'Pemasangan dan konfigurasi perisian sistem operasi',
+      'Pengurusan kabel dan infrastruktur rangkaian LAN',
+      'Penyelenggaraan aset IT jabatan',
+    ],
+    promo: 'Layak naik ke FT22 → FT26 → FT28 melalui kenaikan pangkat. Layak Peningkatan Secara Lantikan ke FA29 apabila disahkan & ada kekosongan.'
+  },
+  ft22: {
+    grade: 'FT22–FT28', color: 'var(--accent-teal)', colorBg: 'rgba(20,184,166,0.15)', colorBorder: 'rgba(20,184,166,0.4)',
+    title: 'Juruteknik Komputer (Kanan)',
+    en: 'Senior Computer Technician',
+    group: 'Pelaksana · Kumpulan Sokongan',
+    salMin: 'RM 1,800', salMax: 'RM 5,600',
+    kumpulan: 'Pelaksana',
+    kelayakan: [
+      'Kenaikan pangkat dari FT19 apabila disahkan dalam perkhidmatan',
+      'Mencapai tahap prestasi yang ditetapkan',
+      'Diperakukan oleh Ketua Jabatan',
+    ],
+    duties: [
+      'Semua tugas FT19 pada tahap yang lebih senior',
+      'Penyeliaan juruteknik bawahan',
+      'Pengurusan aset IT yang lebih kompleks',
+      'Laporan teknikal dan dokumentasi sistem',
+      'Penyelenggaraan server dan sistem rangkaian',
+    ],
+    promo: 'Layak Peningkatan Secara Lantikan ke FA29 (Penolong Pegawai TM) apabila ada kekosongan dan memenuhi syarat. Ini adalah laluan kenaikan utama dari kumpulan pelaksana.'
+  },
+  fa29: {
+    grade: 'FA29', color: 'var(--accent-violet)', colorBg: 'rgba(139,92,246,0.15)', colorBorder: 'rgba(139,92,246,0.4)',
+    title: 'Penolong Pegawai Teknologi Maklumat',
+    en: 'Assistant IT Officer',
+    group: 'Sokongan Pengurusan · Diploma',
+    salMin: 'RM 1,855', salMax: 'RM 5,684',
+    kumpulan: 'Sokongan Pengurusan',
+    kelayakan: [
+      'Diploma Sains Komputer / TM diiktiraf — RM 1,855/bln',
+      'Diploma Kejuruteraan Komputer diiktiraf — RM 1,929/bln',
+      'Kepujian BM (min. Gred C) SPM/SVM wajib',
+    ],
+    duties: [
+      'Membangun program baru untuk sistem gunaan komputer',
+      'Memperkembangkan sistem komputer sedia ada',
+      'Penyelenggaraan sistem maklumat jabatan',
+      'Memberikan latihan dan bantuan teknikal kepada pengguna',
+      'Analisis keperluan sistem dan dokumentasi teknikal',
+      'Sokongan pengaturcaraan dan pembangunan aplikasi',
+    ],
+    promo: 'Naik pangkat ke FA32 → FA38 → FA40. Layak Peningkatan Secara Lantikan ke F41 (Pegawai TM) apabila ada kekosongan dan layak.'
+  },
+  fa32: {
+    grade: 'FA32–FA40', color: 'var(--accent-violet)', colorBg: 'rgba(139,92,246,0.15)', colorBorder: 'rgba(139,92,246,0.4)',
+    title: 'Penolong Pegawai TM (Kanan)',
+    en: 'Senior Assistant IT Officer',
+    group: 'Sokongan Pengurusan · Kanan',
+    salMin: 'RM 2,200', salMax: 'RM 7,500',
+    kumpulan: 'Sokongan Pengurusan',
+    kelayakan: [
+      'Kenaikan pangkat dalaman dari FA29',
+      'Disahkan dalam perkhidmatan',
+      'Memenuhi kompetensi dan prestasi yang ditetapkan',
+    ],
+    duties: [
+      'Pengurusan projek IT berskala sederhana',
+      'Penyeliaan pegawai FA29',
+      'Pembangunan dan penyelenggaraan sistem',
+      'Perundingan teknikal dengan vendor',
+      'Penilaian dan perakuan perolehan peralatan IT',
+    ],
+    promo: 'FA40 layak Peningkatan Secara Lantikan ke F41 (Pengurusan & Profesional) — lompatan besar dalam kerjaya!'
+  },
+  f41: {
+    grade: 'F41', color: 'var(--accent-amber)', colorBg: 'rgba(245,158,11,0.15)', colorBorder: 'rgba(245,158,11,0.4)',
+    title: 'Pegawai Teknologi Maklumat',
+    en: 'IT Officer',
+    group: 'Pengurusan & Profesional',
+    salMin: 'RM 2,315', salMax: 'RM 9,618',
+    kumpulan: 'Pengurusan & Profesional',
+    kelayakan: [
+      'Ijazah Sarjana Muda (Kepujian) Sains Komputer / IT / Kejuruteraan Komputer — RM 2,315/bln',
+      'Ijazah Sarjana dalam bidang berkaitan — RM 3,145/bln',
+      'Kepujian BM (min. Gred C) SPM/SVM wajib',
+    ],
+    duties: [
+      'Menilai & menganalisis potensi sistem komputer sedia ada',
+      'Merancang, membangun & melaksanakan sistem pemprosesan data',
+      'Menjaga & menilai semula sistem maklumat jabatan',
+      'Pengurusan projek IT besar',
+      'Pembangunan dasar dan prosedur IT jabatan',
+      'Penyeliaan kakitangan IT peringkat bawahan',
+    ],
+    promo: 'Naik pangkat ke F44 → F48 → F52 → F54 (Pengarah). Elaun Imbuhan Tetap Khidmat Awam RM 300, Perumahan RM 300, Sara Hidup RM 300.'
+  },
+  f44: {
+    grade: 'F44', color: 'var(--accent-amber)', colorBg: 'rgba(245,158,11,0.15)', colorBorder: 'rgba(245,158,11,0.4)',
+    title: 'Pegawai Teknologi Maklumat (Kanan)',
+    en: 'Senior IT Officer',
+    group: 'Pengurusan & Profesional · Kanan',
+    salMin: 'RM 3,602', salMax: 'RM 10,504',
+    kumpulan: 'Pengurusan & Profesional',
+    kelayakan: [
+      'Kenaikan pangkat dari F41',
+      'Disahkan dalam perkhidmatan',
+      'Mencapai tahap prestasi ditetapkan',
+      'Memenuhi kompetensi & potensi ditetapkan',
+    ],
+    duties: [
+      'Pengurusan projek IT berskala besar',
+      'Pembangunan pelan strategik IT jabatan',
+      'Penyeliaan pasukan teknikal dan sokongan',
+      'Rundingan kontrak dan vendor management',
+      'Laporan teknikal kepada pengurusan atasan',
+    ],
+    promo: 'Layak naik ke F48 setelah memenuhi syarat prestasi & kompetensi.'
+  },
+  f48: {
+    grade: 'F48', color: 'var(--accent-amber)', colorBg: 'rgba(245,158,11,0.15)', colorBorder: 'rgba(245,158,11,0.4)',
+    title: 'Pegawai Teknologi Maklumat Utama',
+    en: 'Principal IT Officer',
+    group: 'Pengurusan & Profesional · Utama',
+    salMin: 'RM 5,203', salMax: 'RM 11,761',
+    kumpulan: 'Pengurusan & Profesional',
+    kelayakan: [
+      'Kenaikan pangkat dari F44',
+      'Disahkan dalam perkhidmatan',
+      'Mencapai tahap prestasi & kompetensi tinggi',
+    ],
+    duties: [
+      'Pengurusan keseluruhan infrastruktur IT jabatan',
+      'Perumusan dasar & piawaian IT',
+      'Pengawasan projek IT mega / kritikal',
+      'Kerjasama antara agensi dalam transformasi digital',
+      'Penyeliaan semua kakitangan IT jabatan',
+    ],
+    promo: 'Layak naik ke F52 → F54 (Pengarah). Elaun Imbuhan Tetap Keraian RM 550, Perumahan RM 700.'
+  },
+  f52: {
+    grade: 'F52–F54', color: 'var(--accent-rose)', colorBg: 'rgba(244,63,94,0.15)', colorBorder: 'rgba(244,63,94,0.4)',
+    title: 'Pengarah / Timbalan Pengarah TM',
+    en: 'Director / Deputy Director IT',
+    group: 'Pengurusan Tertinggi',
+    salMin: 'RM 6,800', salMax: 'RM 13,000+',
+    kumpulan: 'Pengurusan Tertinggi',
+    kelayakan: [
+      'Kenaikan pangkat dari F48',
+      'Rekod prestasi cemerlang yang konsisten',
+      'Kelulusan Lembaga Kenaikan Pangkat',
+    ],
+    duties: [
+      'Kepimpinan strategik transformasi digital jabatan/kementerian',
+      'Penggubalan dasar IT kebangsaan / negeri',
+      'Pengurusan bajet IT berjuta-juta ringgit',
+      'Perwakilan kerajaan dalam forum IT antarabangsa',
+      'Pembangunan modal insan IT sektor awam',
+    ],
+    promo: 'Gred tertinggi dalam skim FA. F54 adalah Pengarah Kanan / Timbalan Ketua Pengarah IT. Boleh lanjut ke jawatan Jusa (Pengurusan Tertinggi Kerajaan).'
+  }
+};
+
+const timelineData = [
+  { year: 'SPM', label: 'Permulaan', grade: '—', color: 'var(--accent-blue)', title: 'Lepasan SPM / SVM', desc: 'Titik permulaan kerjaya — layak memohon Juruteknik Komputer FT19 dengan SPM + SKM.', pills: ['SPM / SVM', 'SKM Tahap 2/3'] },
+  { year: 'Lantikan', label: '0–2 thn', grade: 'FT19', color: 'var(--accent-teal)', title: 'Juruteknik Komputer', desc: 'Lantikan terus sebagai FT19. Fokus pada sokongan teknikal, penyelenggaraan perkakasan & helpdesk.', pills: ['RM 1,500–1,622/bln', 'Pelaksana', 'Kerajaan'] },
+  { year: 'Naik Pangkat', label: '3–6 thn', grade: 'FT22+', color: 'var(--accent-teal)', title: 'Juruteknik Komputer Kanan', desc: 'Kenaikan pangkat ke FT22, FT26 dan FT28 berdasarkan prestasi. Tanggungjawab bertambah.', pills: ['RM 1,800–5,600/bln', 'Penyeliaan', 'Infrastruktur'] },
+  { year: 'Peningkatan', label: 'Tertakluk kekosongan', grade: 'FA29', color: 'var(--accent-violet)', title: 'Penolong Pegawai TM', desc: 'Peningkatan Secara Lantikan dari FT ke FA29. Atau lantikan terus dengan kelayakan Diploma.', pills: ['RM 1,855–5,684/bln', 'Diploma IT', 'Pembangunan Sistem'] },
+  { year: 'Kenaikan', label: '3–5 thn di FA', grade: 'FA32–FA40', color: 'var(--accent-violet)', title: 'Penolong Pegawai TM Kanan', desc: 'Naik pangkat secara berperingkat. Pengurusan projek dan penyeliaan pasukan.', pills: ['RM 2,200–7,500/bln', 'Pengurusan Projek', 'Penyeliaan'] },
+  { year: 'Lantikan / Ijazah', label: 'Terus / Lantikan', grade: 'F41', color: 'var(--accent-amber)', title: 'Pegawai Teknologi Maklumat', desc: 'Lantikan terus dengan Ijazah, ATAU Peningkatan Secara Lantikan dari FA40. Kumpulan Pengurusan & Profesional.', pills: ['RM 2,315–9,618/bln', 'Ijazah / Sarjana', 'P&P'] },
+  { year: 'Kenaikan', label: '3–5 thn di F41', grade: 'F44', color: 'var(--accent-amber)', title: 'Pegawai TM Kanan', desc: 'Kenaikan pangkat pertama dalam kumpulan P&P. Pengurusan projek besar.', pills: ['RM 3,602–10,504/bln', 'Projek IT Besar', 'Strategik'] },
+  { year: 'Kenaikan', label: '3–5 thn di F44', grade: 'F48', color: 'var(--accent-amber)', title: 'Pegawai TM Utama', desc: 'Pengawasan keseluruhan infrastruktur IT dan dasar jabatan.', pills: ['RM 5,203–11,761/bln', 'Dasar IT', 'Pengurusan Tinggi'] },
+  { year: 'Puncak', label: 'Puncak Kerjaya', grade: 'F52–F54', color: 'var(--accent-rose)', title: 'Pengarah / Timbalan Pengarah IT', desc: 'Kepimpinan strategik IT keseluruhan kementerian / jabatan. Peluang ke jawatan Jusa.', pills: ['RM 6,800–13,000+/bln', 'Kepimpinan', 'Digital Kerajaan'] },
+];
+
+// ══════════════════════════════════════════
+// PANEL
+// ══════════════════════════════════════════
+function openPanel(id) {
+  const n = nodes[id];
+  if (!n) return;
+
+  document.querySelectorAll('.node').forEach(el => el.classList.remove('active-node'));
+  const nodeEl = document.querySelector(`[data-id="${id}"]`);
+  if (nodeEl) nodeEl.classList.add('active-node');
+
+  const content = `
+    <div class="panel-grade-tag" style="background:${n.colorBg};border:1px solid ${n.colorBorder};color:${n.color}">GRED ${n.grade}</div>
+    <div class="panel-title">${n.title}</div>
+    <div class="panel-en">${n.en} · ${n.group}</div>
+
+    <div class="panel-salary-box">
+      <div class="salary-item">
+        <label>Gaji Min</label>
+        <span style="color:${n.color}">${n.salMin}</span>
+      </div>
+      <div class="salary-item">
+        <label>Gaji Max</label>
+        <span style="color:${n.color}">${n.salMax}</span>
+      </div>
+      <div class="salary-item" style="grid-column:1/-1">
+        <label>Kumpulan Perkhidmatan</label>
+        <span style="font-size:13px">${n.kumpulan}</span>
+      </div>
+    </div>
+
+    <div class="panel-section" style="--nc:${n.color}">
+      <h4>Syarat Kelayakan · Requirements</h4>
+      ${n.kelayakan.map(k => `<div class="panel-qual-tag">✓ ${k}</div>`).join('')}
+    </div>
+
+    <div class="panel-section" style="--nc:${n.color}">
+      <h4>Skop Tugas · Duties</h4>
+      <ul class="panel-list">
+        ${n.duties.map(d => `<li>${d}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="panel-section">
+      <h4>Laluan Kenaikan · Promotion Path</h4>
+      <div class="promo-badge">⬆️ ${n.promo}</div>
+    </div>
+  `;
+
+  document.getElementById('panel-content').innerHTML = content;
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.querySelectorAll('.node').forEach(el => el.classList.remove('active-node'));
+}
+
+// ══════════════════════════════════════════
+// VIEW TABS
+// ══════════════════════════════════════════
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  event.target.classList.add('active');
+
+  if (name === 'timeline') buildTimeline();
+}
+
+function buildTimeline() {
+  const container = document.getElementById('timeline-items');
+  if (container.children.length > 0) return; // already built
+  container.innerHTML = timelineData.map(item => `
+    <div class="tl-item">
+      <div class="tl-year">
+        <div class="tl-year-val" style="color:${item.color}">${item.grade}</div>
+        <div class="tl-year-label">${item.year}</div>
+        <div class="tl-year-label">${item.label}</div>
+      </div>
+      <div class="tl-line-col">
+        <div class="tl-dot" style="border-color:${item.color};box-shadow:0 0 8px ${item.color}40"></div>
+        <div class="tl-vert"></div>
+      </div>
+      <div class="tl-card" style="--nc:${item.color}" onclick="openPanelFromTimeline('${item.grade}')">
+        <div class="tl-card-grade" style="color:${item.color}">${item.grade}</div>
+        <div class="tl-card-title">${item.title}</div>
+        <div class="tl-card-desc">${item.desc}</div>
+        <div class="tl-card-pills">
+          ${item.pills.map(p => `<span class="pill">${p}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPanelFromTimeline(grade) {
+  const map = { 'FT19':'ft19','FT22+':'ft22','FA29':'fa29','FA32–FA40':'fa32','F41':'f41','F44':'f44','F48':'f48','F52–F54':'f52' };
+  const id = map[grade];
+  if (id) openPanel(id);
+}
+
+// ══════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════
+const quizAnswers = {};
+
+function selectOption(btn, qKey, val) {
+  btn.closest('.quiz-options').querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  quizAnswers[qKey] = val;
+  const step = btn.closest('.quiz-step').dataset.step;
+  document.getElementById('next' + step).classList.add('visible');
+}
+
+function nextStep(to) {
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  document.querySelector(`[data-step="${to}"]`).classList.add('active');
+  const dots = document.querySelectorAll('.quiz-prog-dot');
+  dots.forEach((d, i) => { if (i < to) d.classList.add('done'); else d.classList.remove('done'); });
+}
+
+function showResult() {
+  const q1 = quizAnswers.q1; // kelayakan
+  const q2 = quizAnswers.q2; // minat
+  const q3 = quizAnswers.q3; // pengalaman
+  const q4 = quizAnswers.q4; // matlamat
+
+  let result = { title:'', icon:'', color:'', path:[], advice:'' };
+
+  if (q1 === 'degree' || q1 === 'masters') {
+    result = {
+      title: 'Pegawai Teknologi Maklumat (F41)',
+      icon: '🎓', color: 'var(--accent-amber)',
+      path: ['Tamat Ijazah IT/CS', 'Mohon Gred F41', 'Sahkan Perkhidmatan', 'Naik F44 → F48 → F52'],
+      advice: 'Dengan kelayakan Ijazah, anda boleh terus memohon Gred F41 (Pengurusan & Profesional). Ini adalah laluan terpantas ke jawatan profesional kerajaan. Fokus kepada bidang '+
+        (q2 === 'security' ? 'Keselamatan Siber & IT Governance.' :
+         q2 === 'data' ? 'Data & Business Intelligence.' :
+         q2 === 'management' ? 'Pengurusan Projek IT & Dasar.' : 'Pembangunan Sistem & Aplikasi.')
+    };
+  } else if (q1 === 'diploma') {
+    result = {
+      title: 'Penolong Pegawai TM (FA29)',
+      icon: '💼', color: 'var(--accent-violet)',
+      path: ['Diploma IT/CS Diiktiraf', 'Mohon Gred FA29', 'Naik FA32 → FA38 → FA40', 'Peningkatan ke F41 (Ijazah/Lantikan)'],
+      advice: 'Dengan Diploma, anda layak terus memohon FA29. Pertimbangkan untuk sambung Ijazah secara sambilan bagi mempercepatkan laluan ke F41 (Pengurusan & Profesional). Peningkatan Secara Lantikan ke F41 juga boleh dicapai dari FA40.'
+    };
+  } else if (q1 === 'spm' || q1 === 'cert') {
+    result = {
+      title: 'Juruteknik Komputer (FT19)',
+      icon: '🖥️', color: 'var(--accent-teal)',
+      path: ['SPM + SKM Tahap 2/3', 'Mohon Gred FT19', 'Naik FT22 → FT26 → FT28', 'Peningkatan ke FA29 (Diploma / Lantikan)'],
+      advice: 'Mulakan dengan FT19 sambil berusaha mendapatkan Diploma IT secara sambilan. Setelah berkhidmat dan mendapat Diploma, anda boleh memohon FA29 atau menunggu Peningkatan Secara Lantikan. Kestabilan dan faedah kerajaan tersedia dari hari pertama!'
+    };
+  } else {
+    result = {
+      title: 'Juruteknik Komputer (FT19)',
+      icon: '💡', color: 'var(--accent-blue)',
+      path: ['Perolehi kelayakan IT', 'Mohon jawatan bersesuaian', 'Kembangkan kemahiran', 'Naik pangkat berperingkat'],
+      advice: 'Mulakan perancangan kerjaya anda dengan memperolehi kelayakan yang sesuai (SKM, Sijil atau Diploma IT). Setiap langkah membina ke arah matlamat kerjaya anda.'
+    };
+  }
+
+  const goalNote = q4 === 'leader' ? ' Sasarkan F48 → F52 → F54 (Pengarah) sebagai puncak kerjaya anda.' :
+    q4 === 'specialist' ? ' Fokus kepada pengkhususan teknikal dalam bidang '+(q2==='security'?'Keselamatan Siber':q2==='data'?'Data':'Pembangunan Sistem')+'.' :
+    q4 === 'stable' ? ' Perkhidmatan awam menawarkan kestabilan, pencen, dan faedah komprehensif.' : '';
+
+  document.getElementById('quiz-result-content').innerHTML = `
+    <div class="result-icon" style="background:${result.color}20;border:2px solid ${result.color}">${result.icon}</div>
+    <div class="result-title" style="color:${result.color}">${result.title}</div>
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:4px">Laluan kerjaya yang disyorkan untuk anda</p>
+    <div class="result-path">
+      <h4>Laluan Anda · Your Path</h4>
+      <div class="result-steps">
+        ${result.path.map((s, i) => `
+          <div class="result-step">
+            <div class="result-step-num" style="background:${result.color}25;color:${result.color}">${i+1}</div>
+            <span style="font-size:13px">${s}</span>
+          </div>
+          ${i < result.path.length - 1 ? `<div class="result-step-arrow">↓</div>` : ''}
+        `).join('')}
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.7;text-align:left;background:var(--bg3);border-radius:10px;padding:14px 16px">
+      💡 ${result.advice}${goalNote}
+    </p>
+  `;
+
+  nextStep('result');
+  const dots = document.querySelectorAll('.quiz-prog-dot');
+  dots.forEach(d => d.classList.add('done'));
+}
+
+function resetQuiz() {
+  Object.keys(quizAnswers).forEach(k => delete quizAnswers[k]);
+  document.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.btn-next').forEach(b => b.classList.remove('visible'));
+  document.getElementById('quiz-result-content').innerHTML = '';
+  nextStep(1);
+  const dots = document.querySelectorAll('.quiz-prog-dot');
+  dots.forEach((d, i) => { if (i === 0) d.classList.add('done'); else d.classList.remove('done'); });
+}
+
+// Keyboard close
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>
